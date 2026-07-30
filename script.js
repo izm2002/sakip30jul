@@ -9,84 +9,127 @@ const ikuBelumLengkap = document.getElementById("ikuBelumLengkap");
 const indikatorList = document.getElementById("indikatorList");
 const refreshButton = document.getElementById("refreshButton");
 
-async function ambilData() {
-try {
-statusProgress.textContent = "Sedang mengambil data terbaru...";
+function tampilkanData(data) {
 
 ```
-    const response = await fetch(apiURL);
+const jumlahLengkap = Number(data.ikuLengkap);
+const jumlahTotal = Number(data.totalIKU);
+const jumlahBelumLengkap = jumlahTotal - jumlahLengkap;
+const nilaiProgres = Number(data.progres);
 
-    if (!response.ok) {
-        throw new Error("Gagal mengambil data. Status: " + response.status);
+ikuLengkap.textContent = jumlahLengkap;
+totalIKU.textContent = jumlahTotal;
+persentase.textContent = nilaiProgres.toFixed(2) + "%";
+progressBar.style.width = nilaiProgres + "%";
+ikuBelumLengkap.textContent = jumlahBelumLengkap + " IKU";
+
+if (jumlahLengkap === jumlahTotal) {
+    statusProgress.textContent = "Seluruh IKU telah lengkap.";
+} else {
+    statusProgress.textContent =
+        jumlahBelumLengkap + " IKU masih belum lengkap.";
+}
+
+indikatorList.innerHTML = "";
+
+data.data.forEach(function(item) {
+
+    const kartu = document.createElement("div");
+
+    kartu.className = "iku-card";
+
+    let kelasStatus = "status-belum";
+
+    if (item.status === "Lengkap") {
+        kelasStatus = "status-lengkap";
     }
 
-    const data = await response.json();
+    kartu.innerHTML =
+        "<h3>" + item.iku + "</h3>" +
+        "<span class='status " + kelasStatus + "'>" +
+        item.status +
+        "</span>" +
+        "<div class='dokumen-detail'>" +
+        "Dokumen tersedia: <strong>" +
+        item.jumlahDokumen +
+        " / 3</strong>" +
+        "</div>";
 
-    console.log("Data berhasil dimuat:", data);
+    indikatorList.appendChild(kartu);
 
-    const jumlahLengkap = Number(data.ikuLengkap);
-    const jumlahTotal = Number(data.totalIKU);
-    const jumlahBelumLengkap = jumlahTotal - jumlahLengkap;
-    const nilaiProgres = Number(data.progres);
+});
+```
 
-    ikuLengkap.textContent = jumlahLengkap;
-    totalIKU.textContent = jumlahTotal;
-    persentase.textContent = nilaiProgres.toFixed(2) + "%";
-    progressBar.style.width = nilaiProgres + "%";
-    ikuBelumLengkap.textContent = jumlahBelumLengkap + " IKU";
+}
 
-    if (jumlahLengkap === jumlahTotal) {
-        statusProgress.textContent = "Seluruh IKU telah lengkap.";
-    } else {
-        statusProgress.textContent =
-            jumlahBelumLengkap + " IKU masih belum lengkap.";
-    }
+function tampilkanError(error) {
 
-    indikatorList.innerHTML = "";
+```
+console.error(error);
 
-    data.data.forEach(function(item) {
-        const kartu = document.createElement("div");
+statusProgress.textContent =
+    "Data gagal dimuat.";
 
-        kartu.className = "iku-card";
+indikatorList.innerHTML =
+    "<p class='loading'>" +
+    "Gagal mengambil data dari Google Apps Script." +
+    "</p>";
+```
 
-        let kelasStatus;
+}
 
-        if (item.status === "Lengkap") {
-            kelasStatus = "status-lengkap";
-        } else {
-            kelasStatus = "status-belum";
+function ambilData() {
+
+```
+statusProgress.textContent =
+    "Sedang mengambil data terbaru...";
+
+indikatorList.innerHTML =
+    "<p class='loading'>" +
+    "Sedang memuat data IKU..." +
+    "</p>";
+
+fetch(apiURL)
+    .then(function(response) {
+
+        if (!response.ok) {
+            throw new Error(
+                "Status koneksi: " +
+                response.status
+            );
         }
 
-        kartu.innerHTML =
-            "<h3>" + item.iku + "</h3>" +
-            "<span class='status " + kelasStatus + "'>" +
-            item.status +
-            "</span>" +
-            "<div class='dokumen-detail'>" +
-            "Dokumen tersedia: <strong>" +
-            item.jumlahDokumen +
-            " / 3</strong>" +
-            "</div>";
+        return response.json();
 
-        indikatorList.appendChild(kartu);
+    })
+    .then(function(data) {
+
+        console.log(
+            "Data berhasil dimuat:",
+            data
+        );
+
+        tampilkanData(data);
+
+    })
+    .catch(function(error) {
+
+        tampilkanError(error);
+
     });
-
-} catch (error) {
-    console.error("Terjadi kesalahan:", error);
-
-    statusProgress.textContent = "Data gagal dimuat.";
-
-    indikatorList.innerHTML =
-        "<p class='loading'>" +
-        "Gagal mengambil data dari Google Apps Script." +
-        "</p>";
-}
 ```
 
 }
 
 if (refreshButton) {
-refreshButton.addEventListener("click", ambilData);
+
+```
+refreshButton.addEventListener(
+    "click",
+    ambilData
+);
+```
+
 }
 
 ambilData();
