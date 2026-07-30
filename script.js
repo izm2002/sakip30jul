@@ -1,248 +1,109 @@
-const apiURL =
-"https://script.google.com/macros/s/AKfycbwDvpAKL3WxJc1byFUevWLRnZumjf1T32bTxBNJUa-fjwuljKWRLACg7ptKANqAFsyEMA/exec";
+const apiURL = "https://script.google.com/macros/s/AKfycbwDvpAKL3WxJc1byFUevWLRnZumjf1T32bTxBNJUa-fjwuljKWRLACg7ptKANqAFsyEMA/exec";
 
-const ikuLengkap =
-document.getElementById("ikuLengkap");
-
-const totalIKU =
-document.getElementById("totalIKU");
-
-const persentase =
-document.getElementById("persentase");
-
-const progressBar =
-document.getElementById("progressBar");
-
-const statusProgress =
-document.getElementById("statusProgress");
-
-const ikuBelumLengkap =
-document.getElementById("ikuBelumLengkap");
-
-const indikatorList =
-document.getElementById("indikatorList");
-
-const refreshButton =
-document.getElementById("refreshButton");
+const ikuLengkap = document.getElementById("ikuLengkap");
+const totalIKU = document.getElementById("totalIKU");
+const persentase = document.getElementById("persentase");
+const progressBar = document.getElementById("progressBar");
+const statusProgress = document.getElementById("statusProgress");
+const ikuBelumLengkap = document.getElementById("ikuBelumLengkap");
+const indikatorList = document.getElementById("indikatorList");
+const refreshButton = document.getElementById("refreshButton");
 
 async function ambilData() {
+try {
+statusProgress.textContent = "Sedang mengambil data terbaru...";
 
 ```
-try {
-
-    statusProgress.textContent =
-    "Sedang mengambil data terbaru...";
-
-
     indikatorList.innerHTML = `
         <p class="loading">
             Sedang memuat data IKU...
         </p>
     `;
 
-
-    const response =
-    await fetch(apiURL);
-
+    const response = await fetch(apiURL);
 
     if (!response.ok) {
-
         throw new Error(
-            "Gagal mengambil data. Status: "
-            + response.status
+            "Gagal mengambil data. Status: " + response.status
         );
-
     }
 
+    const data = await response.json();
 
-    const data =
-    await response.json();
+    console.log("Data dari Google Apps Script:", data);
 
+    const jumlahLengkap = Number(data.ikuLengkap);
+    const jumlahTotal = Number(data.totalIKU);
+    const jumlahBelumLengkap = jumlahTotal - jumlahLengkap;
+    const nilaiProgres = Number(data.progres);
 
-    console.log(
-        "Data dari Google Apps Script:",
-        data
-    );
+    ikuLengkap.textContent = jumlahLengkap;
+    totalIKU.textContent = jumlahTotal;
+    persentase.textContent = nilaiProgres.toFixed(2) + "%";
+    progressBar.style.width = nilaiProgres + "%";
+    ikuBelumLengkap.textContent = jumlahBelumLengkap + " IKU";
 
-
-    /* MENAMPILKAN PROGRES */
-
-    const jumlahLengkap =
-    Number(data.ikuLengkap);
-
-
-    const jumlahTotal =
-    Number(data.totalIKU);
-
-
-    const jumlahBelumLengkap =
-    jumlahTotal -
-    jumlahLengkap;
-
-
-    const nilaiProgres =
-    Number(data.progres);
-
-
-    ikuLengkap.textContent =
-    jumlahLengkap;
-
-
-    totalIKU.textContent =
-    jumlahTotal;
-
-
-    persentase.textContent =
-    nilaiProgres.toFixed(2)
-    + "%";
-
-
-    progressBar.style.width =
-    nilaiProgres + "%";
-
-
-    ikuBelumLengkap.textContent =
-    jumlahBelumLengkap
-    + " IKU";
-
-
-    if (
-        jumlahLengkap
-        === jumlahTotal
-    ) {
-
+    if (jumlahLengkap === jumlahTotal) {
         statusProgress.textContent =
-        "Seluruh IKU telah lengkap.";
-
-    }
-
-    else {
-
+            "Seluruh IKU telah memiliki dokumen lengkap.";
+    } else {
         statusProgress.textContent =
-        jumlahBelumLengkap
-        + " IKU masih belum lengkap.";
-
+            jumlahBelumLengkap + " IKU masih belum lengkap.";
     }
-
-
-    /* MENAMPILKAN KARTU IKU */
 
     indikatorList.innerHTML = "";
 
+    data.data.forEach(function (item) {
+        const kartu = document.createElement("div");
 
-    data.data.forEach(
-    function(item) {
-
-
-        const kartu =
-        document.createElement("div");
-
-
-        kartu.className =
-        "iku-card";
-
+        kartu.className = "iku-card";
 
         const sudahLengkap =
+            item.status === "Lengkap";
 
-        item.status
-        === "Lengkap";
-
-
-        const kelasStatus =
-
-        sudahLengkap
-
-        ? "status-lengkap"
-
-        : "status-belum";
-
+        const kelasStatus = sudahLengkap
+            ? "status-lengkap"
+            : "status-belum";
 
         kartu.innerHTML = `
+            <h3>${item.iku}</h3>
 
-            <h3>
-                ${item.iku}
-            </h3>
-
-            <span
-            class="status ${kelasStatus}"
-            >
-
+            <span class="status ${kelasStatus}">
                 ${item.status}
-
             </span>
 
-            <div
-            class="dokumen-detail"
-            >
-
+            <div class="dokumen-detail">
                 Dokumen tersedia:
-
                 <strong>
-
-                    ${item.jumlahDokumen}
-                    / 3
-
+                    ${item.jumlahDokumen} / 3
                 </strong>
-
             </div>
-
         `;
 
-
-        indikatorList.appendChild(
-            kartu
-        );
-
-
+        indikatorList.appendChild(kartu);
     });
 
-
-}
-
-catch (error) {
-
-    console.error(
-        "ERROR:",
-        error
-    );
-
+} catch (error) {
+    console.error("ERROR:", error);
 
     statusProgress.textContent =
-    "Data gagal dimuat.";
-
+        "Data gagal dimuat.";
 
     indikatorList.innerHTML = `
-
         <p class="loading">
-
-            Gagal mengambil data.
-
-            <br><br>
-
-            Periksa Console dengan
-            menekan F12.
-
+            Gagal mengambil data dari Google Apps Script.
         </p>
-
     `;
-
 }
 ```
 
 }
 
-/* TOMBOL PERBARUI DATA */
-
+if (refreshButton) {
 refreshButton.addEventListener(
-
-```
 "click",
-
 ambilData
-```
-
 );
-
-/* MEMUAT DATA SAAT WEBSITE DIBUKA */
+}
 
 ambilData();
