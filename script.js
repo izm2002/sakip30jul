@@ -14,23 +14,15 @@ try {
 statusProgress.textContent = "Sedang mengambil data terbaru...";
 
 ```
-    indikatorList.innerHTML = `
-        <p class="loading">
-            Sedang memuat data IKU...
-        </p>
-    `;
-
     const response = await fetch(apiURL);
 
     if (!response.ok) {
-        throw new Error(
-            "Gagal mengambil data. Status: " + response.status
-        );
+        throw new Error("Gagal mengambil data: " + response.status);
     }
 
     const data = await response.json();
 
-    console.log("Data dari Google Apps Script:", data);
+    console.log(data);
 
     const jumlahLengkap = Number(data.ikuLengkap);
     const jumlahTotal = Number(data.totalIKU);
@@ -44,8 +36,7 @@ statusProgress.textContent = "Sedang mengambil data terbaru...";
     ikuBelumLengkap.textContent = jumlahBelumLengkap + " IKU";
 
     if (jumlahLengkap === jumlahTotal) {
-        statusProgress.textContent =
-            "Seluruh IKU telah memiliki dokumen lengkap.";
+        statusProgress.textContent = "Seluruh IKU telah lengkap.";
     } else {
         statusProgress.textContent =
             jumlahBelumLengkap + " IKU masih belum lengkap.";
@@ -58,52 +49,41 @@ statusProgress.textContent = "Sedang mengambil data terbaru...";
 
         kartu.className = "iku-card";
 
-        const sudahLengkap =
-            item.status === "Lengkap";
+        const kelasStatus =
+            item.status === "Lengkap"
+                ? "status-lengkap"
+                : "status-belum";
 
-        const kelasStatus = sudahLengkap
-            ? "status-lengkap"
-            : "status-belum";
-
-        kartu.innerHTML = `
-            <h3>${item.iku}</h3>
-
-            <span class="status ${kelasStatus}">
-                ${item.status}
-            </span>
-
-            <div class="dokumen-detail">
-                Dokumen tersedia:
-                <strong>
-                    ${item.jumlahDokumen} / 3
-                </strong>
-            </div>
-        `;
+        kartu.innerHTML =
+            "<h3>" + item.iku + "</h3>" +
+            "<span class='status " + kelasStatus + "'>" +
+            item.status +
+            "</span>" +
+            "<div class='dokumen-detail'>" +
+            "Dokumen tersedia: <strong>" +
+            item.jumlahDokumen +
+            " / 3</strong>" +
+            "</div>";
 
         indikatorList.appendChild(kartu);
     });
 
 } catch (error) {
-    console.error("ERROR:", error);
+    console.error(error);
 
-    statusProgress.textContent =
-        "Data gagal dimuat.";
+    statusProgress.textContent = "Data gagal dimuat.";
 
-    indikatorList.innerHTML = `
-        <p class="loading">
-            Gagal mengambil data dari Google Apps Script.
-        </p>
-    `;
+    indikatorList.innerHTML =
+        "<p class='loading'>" +
+        "Gagal mengambil data dari Google Apps Script." +
+        "</p>";
 }
 ```
 
 }
 
 if (refreshButton) {
-refreshButton.addEventListener(
-"click",
-ambilData
-);
+refreshButton.addEventListener("click", ambilData);
 }
 
 ambilData();
