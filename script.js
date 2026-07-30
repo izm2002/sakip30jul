@@ -117,18 +117,15 @@ fetch(apiURL)
         tampilkanError(error);
 
     });
-```
 
 }
 
 if (refreshButton) {
 
-```
 refreshButton.addEventListener(
     "click",
     ambilData
 );
-```
 
 }
 
