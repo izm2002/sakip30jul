@@ -10,12 +10,11 @@ const indikatorList = document.getElementById("indikatorList");
 const refreshButton = document.getElementById("refreshButton");
 
 function tampilkanData(data) {
-
-```
 const jumlahLengkap = Number(data.ikuLengkap);
 const jumlahTotal = Number(data.totalIKU);
 const jumlahBelumLengkap = jumlahTotal - jumlahLengkap;
 const nilaiProgres = Number(data.progres);
+
 
 ikuLengkap.textContent = jumlahLengkap;
 totalIKU.textContent = jumlahTotal;
@@ -33,7 +32,6 @@ if (jumlahLengkap === jumlahTotal) {
 indikatorList.innerHTML = "";
 
 data.data.forEach(function(item) {
-
     const kartu = document.createElement("div");
 
     kartu.className = "iku-card";
@@ -56,33 +54,28 @@ data.data.forEach(function(item) {
         "</div>";
 
     indikatorList.appendChild(kartu);
-
 });
-```
+
 
 }
 
 function tampilkanError(error) {
-
-```
 console.error(error);
 
-statusProgress.textContent =
-    "Data gagal dimuat.";
+statusProgress.textContent = "Data gagal dimuat.";
 
 indikatorList.innerHTML =
     "<p class='loading'>" +
     "Gagal mengambil data dari Google Apps Script." +
     "</p>";
-```
+
 
 }
 
 function ambilData() {
-
-```
 statusProgress.textContent =
-    "Sedang mengambil data terbaru...";
+"Sedang mengambil data terbaru...";
+
 
 indikatorList.innerHTML =
     "<p class='loading'>" +
@@ -91,42 +84,34 @@ indikatorList.innerHTML =
 
 fetch(apiURL)
     .then(function(response) {
-
         if (!response.ok) {
             throw new Error(
-                "Status koneksi: " +
-                response.status
+                "Status koneksi: " + response.status
             );
         }
 
         return response.json();
-
     })
     .then(function(data) {
-
         console.log(
             "Data berhasil dimuat:",
             data
         );
 
         tampilkanData(data);
-
     })
     .catch(function(error) {
-
         tampilkanError(error);
-
     });
+
 
 }
 
 if (refreshButton) {
-
 refreshButton.addEventListener(
-    "click",
-    ambilData
+"click",
+ambilData
 );
-
 }
 
 ambilData();
