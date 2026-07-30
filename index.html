@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+```
+<title>Monitoring Dokumen AKIP</title>
+
+<link rel="stylesheet" href="style.css">
+```
+
+</head>
+
+<body>
+
+```
+<header class="header">
+    <div class="header-content">
+        <div>
+            <h1>MONITORING DOKUMEN AKIP</h1>
+            <p>Monitoring Kelengkapan Dokumen dan Bukti Dukung</p>
+        </div>
+
+        <div class="periode">
+            <span>Periode</span>
+            <strong>Triwulan I Tahun 2026</strong>
+        </div>
+    </div>
+</header>
+
+<main class="container">
+
+    <section class="judul-section">
+        <h2>Progress Kelengkapan Dokumen</h2>
+        <p>
+            Informasi kelengkapan dokumen berdasarkan data
+            pada Google Drive.
+        </p>
+    </section>
+
+    <section class="progress-card">
+
+        <div class="progress-info">
+
+            <div class="progress-angka">
+                <span id="ikuLengkap">0</span>
+                <span>/ <span id="totalIKU">17</span> IKU</span>
+            </div>
+
+            <p id="statusProgress">
+                Sedang memuat data dokumen...
+            </p>
+
+        </div>
+
+        <div class="progress-container">
+            <div
+                class="progress-bar"
+                id="progressBar"
+            ></div>
+        </div>
+
+        <div class="progress-detail">
+
+            <div class="detail-item">
+                <span class="detail-label">
+                    Persentase
+                </span>
+
+                <strong id="persentase">
+                    0%
+                </strong>
+            </div>
+
+            <div class="detail-item">
+                <span class="detail-label">
+                    IKU Belum Lengkap
+                </span>
+
+                <strong id="ikuBelumLengkap">
+                    17 IKU
+                </strong>
+            </div>
+
+        </div>
+
+    </section>
+
+    <section class="indikator-section">
+
+        <div class="section-header">
+
+            <div>
+                <h2>Status Kelengkapan IKU</h2>
+
+                <p>
+                    Setiap IKU diperiksa berdasarkan
+                    kelengkapan notula, bukti dukung
+                    kinerja, dan bukti tindak lanjut.
+                </p>
+            </div>
+
+            <button
+                class="refresh-button"
+                id="refreshButton"
+            >
+                ↻ Perbarui Data
+            </button>
+
+        </div>
+
+        <div
+            class="indikator-grid"
+            id="indikatorList"
+        >
+
+            <p class="loading">
+                Sedang memuat data...
+            </p>
+
+        </div>
+
+    </section>
+
+</main>
+
+<footer>
+    <p>
+        Sistem Monitoring Kelengkapan Dokumen AKIP
+    </p>
+</footer>
+
+<script src="script.js"></script>
+```
+
+</body>
+</html>
