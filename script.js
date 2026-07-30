@@ -17,12 +17,12 @@ statusProgress.textContent = "Sedang mengambil data terbaru...";
     const response = await fetch(apiURL);
 
     if (!response.ok) {
-        throw new Error("Gagal mengambil data: " + response.status);
+        throw new Error("Gagal mengambil data. Status: " + response.status);
     }
 
     const data = await response.json();
 
-    console.log(data);
+    console.log("Data berhasil dimuat:", data);
 
     const jumlahLengkap = Number(data.ikuLengkap);
     const jumlahTotal = Number(data.totalIKU);
@@ -44,15 +44,18 @@ statusProgress.textContent = "Sedang mengambil data terbaru...";
 
     indikatorList.innerHTML = "";
 
-    data.data.forEach(function (item) {
+    data.data.forEach(function(item) {
         const kartu = document.createElement("div");
 
         kartu.className = "iku-card";
 
-        const kelasStatus =
-            item.status === "Lengkap"
-                ? "status-lengkap"
-                : "status-belum";
+        let kelasStatus;
+
+        if (item.status === "Lengkap") {
+            kelasStatus = "status-lengkap";
+        } else {
+            kelasStatus = "status-belum";
+        }
 
         kartu.innerHTML =
             "<h3>" + item.iku + "</h3>" +
@@ -69,7 +72,7 @@ statusProgress.textContent = "Sedang mengambil data terbaru...";
     });
 
 } catch (error) {
-    console.error(error);
+    console.error("Terjadi kesalahan:", error);
 
     statusProgress.textContent = "Data gagal dimuat.";
 
